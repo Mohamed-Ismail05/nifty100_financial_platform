@@ -1,20 +1,29 @@
-""" Utility functions for standardizing financial datasets. """
-import re 
-def normalize_year(year_value):
-    """ Convert year values into a standard YYYY format. """
-    if year_value is None:
-        return None 
-    year_value = str(year_value).strip() 
-    match = re.search(r"(20\d{2})-(\d{2})$", year_value)
+import re
+
+def normalize_year(value):
+    value = str(value).strip()
+    if value == "TTM":
+        return "TTM"
+    match = re.match(r"([A-Za-z]{3})\s+(\d{4})",value)
     if match:
-        return int("20" + match.group(2))
-    match = re.search(r"(20\d{2})", year_value) 
-    if match: 
-        return int(match.group(1)) 
-    match = re.search(r"(\d{2})$", year_value)
-    if match:
-            return int("20" + match.group(1)) 
-    return None 
+        month = match.group(1)
+        year = match.group(2)
+        month_map = {
+            "Jan": "01",
+            "Feb": "02",
+            "Mar": "03",
+            "Apr": "04",
+            "May": "05",
+            "Jun": "06",
+            "Jul": "07",
+            "Aug": "08",
+            "Sep": "09",
+            "Oct": "10",
+            "Nov": "11",
+            "Dec": "12"
+        }
+        return f"{year}-{month_map[month]}"
+    return None
 def normalize_ticker(ticker):
     """ Standardize ticker symbols. """ 
     if ticker is None: 
